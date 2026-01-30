@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Loading Animation Simulator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 100px;
+      /* Transition property makes background color changes smooth */
+      transition: background-color 0.5s ease;
+    }
+    #loader {
+      font-size: 50px;
+      margin-bottom: 20px;
+    }
+    #status {
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body>
+  <!-- DOM element with unique ID that JavaScript will target to update the loading emoji -->
+  <div id="loader">Loading...</div>
+  
+  <!-- DOM element that shows the current status text to the user -->
+  <div id="status">Please wait</div>
+
+  <script>
+    // Main function that starts and controls the loading animation
+    function runLoadingAnimation() {
+      
+      // Grab references to the two HTML elements by their IDs so we can update them dynamically
+      const loader = document.getElementById("loader");
+      const status = document.getElementById("status");
+
+      // Array of emoji and dot frames that will display in sequence to create animation effect
+      const frames = ["⏳", "⌛", ".", "..", "..."];
+
+      // NEW FEATURE: Array of background colors that will cycle during the loading animation
+      const bgColors = ["#f0f8ff", "#e0f7fa", "#fff3e0", "#fce4ec", "#e8f5e9"];
+
+      // Variable to track which frame in the frames array we're currently showing
+      let index = 0;
+
+      // Counter to track how many complete cycles through all frames have occurred
+      let cycleCount = 0;
+
+      // Maximum number of full cycles before the animation stops (prevents infinite loop)
+      const maxCycles = 10;
+
+      // setInterval is an asynchronous function that executes the callback function every 500 milliseconds
+      // It returns an interval ID that we store so we can stop it later with clearInterval
+      const interval = setInterval(() => {
+        
+        // Update the loader element's text to show the current frame
+        // The modulo operator (%) ensures index wraps back to 0 when it exceeds frames.length
+        loader.textContent = frames[index % frames.length];
+
+        // NEW FEATURE: Change the background color based on current index
+        // This creates a visual progression effect as the animation runs
+        document.body.style.backgroundColor = bgColors[index % bgColors.length];
+
+        // Increment index so next iteration shows the next frame
+        index++;
+
+        // When index is a multiple of frames.length, we've completed one full cycle
+        if (index % frames.length === 0) {
+          cycleCount++;
+        }
+
+        // Check if we've reached the maximum number of cycles
+        if (cycleCount >= maxCycles) {
+          // clearInterval stops the asynchronous loop by canceling the interval timer
+          clearInterval(interval);
+
+          // Update the loader to show a checkmark indicating completion
+          loader.textContent = "✅";
+
+          // Update status text to inform user the loading is complete
+          status.textContent = "Done!";
+
+          // NEW FEATURE: Set a final success color when animation completes
+          document.body.style.backgroundColor = "#c8e6c9";
+        }
+      }, 500); // 500 milliseconds = 0.5 seconds between each frame update
+    }
+
+    // Call the function immediately when the page loads to start the animation
+    runLoadingAnimation();
+
+    // CREATIVE IDEA: Could add a restart button that calls runLoadingAnimation() again
+    // CREATIVE IDEA: Could add sound effects that play on each frame change using Audio API
+    // CREATIVE IDEA: Could make the loader element bounce or shake using CSS animations
+  </script>
+</body>
+</html>
